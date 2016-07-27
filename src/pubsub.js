@@ -1,3 +1,15 @@
+/**
+ * pubsub.js
+ *
+ * A tiny, optimized, tested, standalone and robust
+ * pubsub implementation supporting different javascript environments
+ *
+ * @author Federico "Lox" Lucignano <http://plus.ly/federico.lox>
+ *
+ * @see https://github.com/federico-lox/pubsub.js
+ * @see https://github.com/WinfieldHill/pubsub.js/tree/wildcards
+ */
+
 /*global define, module*/
 (function (context) {
 	'use strict';
@@ -54,20 +66,22 @@
 					//run the callbacks asynchronously,
 					//do not block the main execution process
 					setTimeout(
-						(function () {
+						function () {
 							//executes callbacks in the order
 							//in which they were registered
 							for (x = 0; x < len; x += 1) {
 								//console.log(toCall);
 								//console.log(channels[toCall[x]]);
-								channels[toCall[x]].forEach(function(func, idx) {
+								channels[toCall[x]].forEach(function(func) {
 									func.apply(context, params);
 								});
 							}
 
 							//clear references to allow garbage collection
 							subs = context = params = null;
-						}()),0);
+						},
+						0
+					);
 				}
 			},
 
