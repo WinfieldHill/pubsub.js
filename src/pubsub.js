@@ -1,14 +1,3 @@
-/**
- * pubsub.js
- *
- * A tiny, optimized, tested, standalone and robust
- * pubsub implementation supporting different javascript environments
- *
- * @author Federico "Lox" Lucignano <http://plus.ly/federico.lox>
- *
- * @see https://github.com/federico-lox/pubsub.js
- */
-
 /*global define, module*/
 (function (context) {
 	'use strict';
@@ -19,7 +8,7 @@
 	function init() {
 		//the channel subscription hash
 		var channels = {},
-			//help minification
+		//help minification
 			funcType = Function;
 
 		return {
@@ -44,32 +33,41 @@
 			publish: function () {
 				//help minification
 				var args = arguments,
-					// args[0] is the channel
+				// args[0] is the channel
 					subs = channels[args[0]],
 					len,
 					params,
-					x;
+					x,
+					toCall = [],
+					regObj = new RegExp("^" + args[0].split("*").join(".*") + "$");
 
-				if (subs) {
-					len = subs.length;
+				Object.keys(channels).forEach(function(channel, idx) {
+					if (regObj.test(channel)) toCall.push(channel);
+				});
+
+				len = toCall.length;
+
+				if (len) {
 					params = (args.length > 1) ?
-							Array.prototype.splice.call(args, 1) : [];
+						Array.prototype.splice.call(args, 1) : [];
 
 					//run the callbacks asynchronously,
 					//do not block the main execution process
 					setTimeout(
-						function () {
+						(function () {
 							//executes callbacks in the order
 							//in which they were registered
 							for (x = 0; x < len; x += 1) {
-								subs[x].apply(context, params);
+								//console.log(toCall);
+								//console.log(channels[toCall[x]]);
+								channels[toCall[x]].forEach(function(func, idx) {
+									func.apply(context, params);
+								});
 							}
 
 							//clear references to allow garbage collection
 							subs = context = params = null;
-						},
-						0
-					);
+						}()),0);
 				}
 			},
 
