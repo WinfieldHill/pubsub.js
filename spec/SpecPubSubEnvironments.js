@@ -21,7 +21,7 @@ describe("Supported environments", function () {
 					(api.unsubscribe instanceof Function);
 			}
 		});
-	});
+	}); 
 
 	it("Should work as a traditional JS module", function () {
 		expect(PubSub).toMatchImplementation();

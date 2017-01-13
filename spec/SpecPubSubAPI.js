@@ -493,7 +493,7 @@ describe("API", function () {
 			expect(function () {
 				PubSub.unsubscribe([a]);
 			}).toThrow();
-		});
+		}); 
 
 		it("Should fail if not valid callback", function () {
 			expect(function () {
